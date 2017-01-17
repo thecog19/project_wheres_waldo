@@ -51,9 +51,9 @@ APP.Controller = (function() {
   }
 
   var pictureClick = function(e) {
-    
+    View.computeX(e.offset)
 
-    var tempTag = new _TagConstuctor(e.offsetX - 33 , e.offsetY - 33);
+    var tempTag = new _TagConstuctor();
     _View.addDropdown(tempTag);
   }
 
