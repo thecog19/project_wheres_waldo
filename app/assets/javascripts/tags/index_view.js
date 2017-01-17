@@ -1,7 +1,7 @@
 var APP = APP || { }
 
 APP.View = (function($){
-  var $pic, height, width
+  var $pic, height, width, $dropDown
 
   var _addEventListeners = function _addEventListeners(cbs) {
     $pic.on("mousemove", cbs.pictureEnter)
@@ -21,7 +21,7 @@ APP.View = (function($){
       var name = $("<div>").addClass("name").text(tag.name)
       tagSquare.append(name[0])
     }
-    
+
     $pic[0].appendChild(tagSquare);
 
     return tagSquare;
@@ -36,6 +36,7 @@ APP.View = (function($){
     resetDimensions()
     $pic = $("#waldo-pic");
     _addEventListeners(callbacks);
+
   };
 
   var createTags = function(tags){
@@ -50,14 +51,19 @@ APP.View = (function($){
     $pic[0].innerHTML = "";
   };
 
+  var generateDropdown = function(options){
+    $dropDown =  $('<select>')
+    var option
+    options.names.forEach(function(name){
+      option = $("<option>").val(name.id)
+      option.text(name.name)
+      $dropDown.append(option) 
+    })   
+    
+  }
+
   var addDropdown = function addDropdown(tag) {
     var tagSquare = _createTag(tag);
-
-    var $dropDown = $('<select>').append('<option></option>')
-                                 .append('<option>Waldo</option>')
-                                 .append('<option>Wendy</option>')
-
-
     tagSquare.append($dropDown[0])
   }
 
@@ -76,6 +82,7 @@ APP.View = (function($){
           addDropdown: addDropdown,
           insidePicture: insidePicture,
           resetDimensions: resetDimensions,
-          computeCoords: computeCoords
+          computeCoords: computeCoords,
+          generateDropdown: generateDropdown
           }
 })($)

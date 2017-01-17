@@ -3,10 +3,11 @@ var APP = APP || { }
 APP.Controller = (function() {
   var _View;
 
-  var _TagConstuctor = function(x,y,name){
+  var _TagConstuctor = function(x,y,name_id,name){
     this.x = x;
     this.y = y;
-    this.name = name || null;
+    this.name_id = name_id || null;
+    this.name = name || null
   };
 
   var _tags = [];
@@ -15,6 +16,7 @@ APP.Controller = (function() {
   var _inside = false;
 
   var init = function(View){
+    getNames()
     _View = View;
 
     _View.init({
@@ -47,6 +49,14 @@ APP.Controller = (function() {
     _View.deleteTags(_tags);
   }
 
+  var getNames = function(){
+    $.ajax({
+      url: '/tags.json',
+      method: 'GET',
+      complete: (function(r){ _View.generateDropdown(r.responseJSON) })
+    })
+  }
+
   var pictureClick = function(e) {
     if (e.target.tagName === 'SELECT') return false;
 
@@ -62,10 +72,9 @@ APP.Controller = (function() {
   }
 
   var tagNameSelect = function tagNameSelect(e) {
-    console.log("tagNameSelect", e.target.value);
+    console.log("tagNameSelect", e.target);
 
-    _tempTag.name = e.target.value;
-    console.log(JSON.stringify({tag: _tempTag}));
+    _tempTag.name_id = e.target.value;
     _tags.push(_tempTag);
     $.ajax({
       url: '/tags.json',

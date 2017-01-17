@@ -1,7 +1,9 @@
 class TagsController < ApplicationController
   def index
+    @tags = Tag.all
+    @names = Name.all
     respond_to do |format|
-      format.json
+      format.json{ render json: {names: @names, tags: @tags }}
       format.html
     end
   end
@@ -13,7 +15,7 @@ class TagsController < ApplicationController
 
       respond_to do |format|
         format.html { redirect_to tags_path }
-        format.json { render json: @tag.reload }
+        format.json { render json: {tag: @tag.reload, name: @tag.name.name }}
       end
     else
 
@@ -27,6 +29,6 @@ class TagsController < ApplicationController
   private
 
     def tag_params
-      params.require(:tag).permit(:x, :y, :name)
+      params.require(:tag).permit(:x, :y, :name_id)
     end
 end
