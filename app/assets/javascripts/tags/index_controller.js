@@ -9,10 +9,7 @@ APP.Controller = (function() {
     this.name = name || null;
   };
 
-  var _tags = [ new _TagConstuctor(.8,.05),
-                new _TagConstuctor(0,0),
-                new _TagConstuctor(.01, .06),
-                new _TagConstuctor(.5, .5)];
+  var _tags = [];
 
   var _tempTag = undefined;
   var _inside = false;
@@ -52,15 +49,17 @@ APP.Controller = (function() {
 
   var pictureClick = function(e) {
     var coords = _View.computeCoords(e);
-
-    var tempTag = new _TagConstuctor(coords[0], coords[1]);
-    _View.addDropdown(tempTag);
-  }
+    if(_tempTag){}else{
+        _tempTag = new _TagConstuctor(coords[0], coords[1]);
+        _View.addDropdown(_tempTag);
+      }}
 
   var tagNameSelect = function tagNameSelect(e) {
     console.log("tagNameSelect", e.target.value)
-    
-  // store, add tag, remove drop down, display all tags)
+    _tempTag.name = e.target.value
+    _tags.push(_tempTag)
+    _tempTag = undefined
+    _View.createTags(_tags)
   }
 
   return { init: init }

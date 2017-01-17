@@ -17,7 +17,11 @@ APP.View = (function($){
     tagSquare.style.top = tag.y * height + "px";
     tagSquare.style.left = tag.x * width + "px";
     tagSquare.style.zIndex = '0';
-
+    if(tag.name){
+      var name = $("<div>").addClass("name").text(tag.name)
+      tagSquare.append(name[0])
+    }
+    
     $pic[0].appendChild(tagSquare);
 
     return tagSquare;
