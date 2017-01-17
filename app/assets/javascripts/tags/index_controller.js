@@ -9,35 +9,51 @@ APP.Controller = (function() {
     this.name = name || null;
   };
 
-  var _tags = [ new _TagConstuctor(40,50),
+  var _tags = [ new _TagConstuctor(.8,.05),
                 new _TagConstuctor(0,0),
-                new _TagConstuctor(150, 100),
-                new _TagConstuctor(300, 400)];
+                new _TagConstuctor(.01, .06),
+                new _TagConstuctor(.5, .5)];
 
   var _tempTag = undefined;
-
+  var _inside = false;
+ 
   var init = function(View){
     _View = View;
 
     _View.init({
       pictureEnter: pictureEnter,
       pictureLeave: pictureLeave,
-      pictureClick: pictureClick
+      pictureClick: pictureClick,
+      resetDimensions: resetDimensions
     })
   };
 
-  var pictureEnter = function(){
-    _View.createTags(_tags);
+  var resetDimensions = function(){
+    _View.resetDimensions()
+    _View.createTags(_tags)
   }
+
+  var pictureEnter = function(e){
+    if(_View.insidePicture(e)){
+      if(!_inside){
+        _View.createTags(_tags);
+        _inside = true
+      }
+      }else{
+        _inside = false
+        pictureLeave()
+      }
+  }
+
 
   var pictureLeave = function(){
     _View.deleteTags(_tags);
   }
 
   var pictureClick = function(e) {
-    console.log(e);
+    
 
-    var tempTag = new _TagConstuctor(e.pageX, e.pageY);
+    var tempTag = new _TagConstuctor(e.offsetX - 33 , e.offsetY - 33);
     _View.addDropdown(tempTag);
   }
 
