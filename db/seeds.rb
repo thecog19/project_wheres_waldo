@@ -7,6 +7,6 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-["waldo","wenda","odlaw","wizard whitebeard","woof"].each do |name|
+["Waldo","Wenda","Odlaw","Wizzy White","Woof"].each do |name|
   Name.create(name: name)
 end

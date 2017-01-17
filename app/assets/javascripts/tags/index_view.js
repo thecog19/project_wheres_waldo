@@ -51,19 +51,31 @@ APP.View = (function($){
     $pic[0].innerHTML = "";
   };
 
-  var generateDropdown = function(options){
-    $dropDown =  $('<select>')
-    var option
-    options.names.forEach(function(name){
+  var generateDropdown = function(names){
+    $dropDown =  $('<select>');
+    $dropDown.text("")
+
+    var option;
+
+    // Add blank option at top
+    option = $("<option>").val("")
+    option.text("")
+    $dropDown.append(option)
+
+    names.forEach(function(name){
       option = $("<option>").val(name.id)
       option.text(name.name)
-      $dropDown.append(option) 
-    })   
-    
+      $dropDown.append(option)
+    })
+
   }
 
   var addDropdown = function addDropdown(tag) {
     var tagSquare = _createTag(tag);
+
+    $dropDown.find('option:first-child').prop('selected', true)
+             .end().trigger('chosen:updated');
+
     tagSquare.append($dropDown[0])
   }
 
@@ -72,7 +84,7 @@ APP.View = (function($){
   }
 
   var computeCoords = function computeCoords(e) {
-    return [(e.offsetX - 33)/width, (e.offsetY - 33)/height]
+    return { x: (e.offsetX - 33)/width, y: (e.offsetY - 33)/height}
   }
 
   return {

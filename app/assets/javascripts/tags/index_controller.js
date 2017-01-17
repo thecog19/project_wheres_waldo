@@ -1,23 +1,23 @@
 var APP = APP || { }
 
 APP.Controller = (function() {
-  var _View;
-
-  var _TagConstuctor = function(x,y,name_id,name){
-    this.x = x;
-    this.y = y;
-    this.name_id = name_id || null;
-    this.name = name || null
-  };
-
+  var _View, _names;
   var _tags = [];
 
   var _tempTag = undefined;
   var _inside = false;
 
+  var _TagConstructor = function(options){
+    this.x = options.x;
+    this.y = options.y;
+    this.name_id = options.name_id || null;
+    this.name = options.name || null
+  };
+
   var init = function(View){
-    getNames()
     _View = View;
+
+    getData();
 
     _View.init({
       pictureEnter: pictureEnter,
@@ -49,11 +49,38 @@ APP.Controller = (function() {
     _View.deleteTags(_tags);
   }
 
-  var getNames = function(){
+  var _findName = function(id){
+    for( var i = 0; i < _names.length; i++){
+      if (_names[i].id === id) {
+        return _names[i].name;
+      }
+    }
+  }
+
+  var _constructTags = function(modelTags){
+    var viewTags = [], vTag;
+
+    modelTags.forEach( function(mTag) {
+      mTag.name = _findName(mTag.name_id);
+      vTag = new _TagConstructor(mTag);
+      viewTags.push(vTag);
+    })
+
+    return viewTags;
+  }
+
+  var _successfulPageLoad = function(r){
+    _names = r.responseJSON.names;
+    _tags = _constructTags(r.responseJSON.tags);
+    _View.generateDropdown(_names);
+    _View.createTags(_tags);
+  }
+
+  var getData = function(){
     $.ajax({
       url: '/tags.json',
       method: 'GET',
-      complete: (function(r){ _View.generateDropdown(r.responseJSON) })
+      complete: _successfulPageLoad
     })
   }
 
@@ -66,25 +93,34 @@ APP.Controller = (function() {
       _tempTag = undefined;
       _View.createTags(_tags);
     } else {
-      _tempTag = new _TagConstuctor(coords[0], coords[1]);
+      _tempTag = new _TagConstructor(coords);
       _View.addDropdown(_tempTag);
     }
   }
 
-  var tagNameSelect = function tagNameSelect(e) {
-    console.log("tagNameSelect", e.target);
-
-    _tempTag.name_id = e.target.value;
+  var _successfulTagCreate = function(r){
+    _tempTag.name = r.name
     _tags.push(_tempTag);
+    _tempTag = undefined;
+    _View.createTags(_tags);
+  }
+
+  var _errorTagCreate = function(r){
+    _tempTag = undefined;
+    _View.createTags(_tags);
+  }
+
+  var tagNameSelect = function tagNameSelect(e) {
+    _tempTag.name_id = e.target.value;
+
     $.ajax({
       url: '/tags.json',
       method: 'POST',
       data: JSON.stringify({tag: _tempTag}),
       contentType: 'application/json',
-      complete: (function(r){ console.log("ajax complete", r) })
+      success: _successfulTagCreate,
+      error: _errorTagCreate
     })
-    _tempTag = undefined;
-    _View.createTags(_tags);
   }
 
   return { init: init }
