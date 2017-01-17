@@ -8,6 +8,7 @@ APP.View = (function($){
     window.addEventListener('resize', cbs.resetDimensions)
     $pic.on("click", cbs.pictureClick)
     $pic.on("change", "select", cbs.tagNameSelect)
+    $pic.on("click", ".delete", cbs.deleteTag)
   }
 
   var _createTag = function _createTag(tag) {
@@ -17,9 +18,13 @@ APP.View = (function($){
     tagSquare.style.top = tag.y * height + "px";
     tagSquare.style.left = tag.x * width + "px";
     tagSquare.style.zIndex = '0';
+    $(tagSquare).attr("data-id", tag.id)
     if(tag.name){
       var name = $("<div>").addClass("name").text(tag.name)
+      var deleteButton = $("<button>").text("X").attr("data-id", tag.id).addClass("delete")
+
       tagSquare.append(name[0])
+      tagSquare.append(deleteButton[0])
     }
 
     $pic[0].appendChild(tagSquare);

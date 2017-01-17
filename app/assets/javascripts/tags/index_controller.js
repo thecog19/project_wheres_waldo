@@ -12,6 +12,7 @@ APP.Controller = (function() {
     this.y = options.y;
     this.name_id = options.name_id || null;
     this.name = options.name || null
+    this.id = options.id
   };
 
   var init = function(View){
@@ -19,14 +20,30 @@ APP.Controller = (function() {
 
     getData();
 
+
     _View.init({
       pictureEnter: pictureEnter,
       pictureLeave: pictureLeave,
       pictureClick: pictureClick,
       resetDimensions: resetDimensions,
-      tagNameSelect: tagNameSelect
+      tagNameSelect: tagNameSelect,
+      deleteTag: deleteTag
     })
   };
+
+  var deleteTag = function(e){
+    var uri = '/tags/' + e.target.getAttribute("data-id")
+    console.log(uri)
+    $.ajax({
+      url: uri,
+      method: 'DELETE',
+      complete: successfulTagDelete
+    })
+  }
+
+  var successfulTagDelete = function(e){
+    console.log(e)
+  }
 
   var resetDimensions = function(){
     _View.resetDimensions()
