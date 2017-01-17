@@ -16,7 +16,7 @@ APP.Controller = (function() {
 
   var _tempTag = undefined;
   var _inside = false;
- 
+
   var init = function(View){
     _View = View;
 
@@ -24,7 +24,8 @@ APP.Controller = (function() {
       pictureEnter: pictureEnter,
       pictureLeave: pictureLeave,
       pictureClick: pictureClick,
-      resetDimensions: resetDimensions
+      resetDimensions: resetDimensions,
+      tagNameSelect: tagNameSelect
     })
   };
 
@@ -45,16 +46,21 @@ APP.Controller = (function() {
       }
   }
 
-
   var pictureLeave = function(){
     _View.deleteTags(_tags);
   }
 
   var pictureClick = function(e) {
-    View.computeX(e.offset)
+    var coords = _View.computeCoords(e);
 
-    var tempTag = new _TagConstuctor();
+    var tempTag = new _TagConstuctor(coords[0], coords[1]);
     _View.addDropdown(tempTag);
+  }
+
+  var tagNameSelect = function tagNameSelect(e) {
+    console.log("tagNameSelect", e.target.value)
+    
+  // store, add tag, remove drop down, display all tags)
   }
 
   return { init: init }

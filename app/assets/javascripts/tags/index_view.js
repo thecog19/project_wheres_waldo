@@ -7,10 +7,24 @@ APP.View = (function($){
     $pic.on("mousemove", cbs.pictureEnter)
     window.addEventListener('resize', cbs.resetDimensions)
     $pic.on("click", cbs.pictureClick)
+    $pic.on("change", "select", cbs.tagNameSelect)
+  }
+
+  var _createTag = function _createTag(tag) {
+    tagSquare = document.createElement('DIV');
+    tagSquare.classList.add('tag');
+
+    tagSquare.style.top = tag.y * height + "px";
+    tagSquare.style.left = tag.x * width + "px";
+    tagSquare.style.zIndex = '0';
+
+    $pic[0].appendChild(tagSquare);
+
+    return tagSquare;
   }
 
   var resetDimensions = function(){
-    height = window.innerHeight * 0.9 
+    height = window.innerHeight * 0.9
     width = window.innerWidth * 0.8
   }
 
@@ -24,14 +38,7 @@ APP.View = (function($){
     deleteTags();
 
     tags.forEach(function(tag){
-      tagSquare = document.createElement('DIV');
-      tagSquare.classList.add('tag');
-
-      tagSquare.style.top = tag.y * height + "px";
-      tagSquare.style.left = tag.x * width + "px";
-      tagSquare.style.zIndex = '0';
-
-      $pic[0].appendChild(tagSquare);
+      _createTag(tag);
     })
   };
 
@@ -40,11 +47,22 @@ APP.View = (function($){
   };
 
   var addDropdown = function addDropdown(tag) {
-    createTags([tag]);
+    var tagSquare = _createTag(tag);
+
+    var $dropDown = $('<select>').append('<option></option>')
+                                 .append('<option>Waldo</option>')
+                                 .append('<option>Wendy</option>')
+
+
+    tagSquare.append($dropDown[0])
   }
 
   var insidePicture = function(e){
     return e.clientX > 0 && e.clientX < width && e.clientY > 0 && e.clientY < height
+  }
+
+  var computeCoords = function computeCoords(e) {
+    return [(e.offsetX - 33)/width, (e.offsetY - 33)/height]
   }
 
   return {
@@ -53,6 +71,7 @@ APP.View = (function($){
           deleteTags: deleteTags,
           addDropdown: addDropdown,
           insidePicture: insidePicture,
-          resetDimensions: resetDimensions
+          resetDimensions: resetDimensions,
+          computeCoords: computeCoords
           }
 })($)
