@@ -32,8 +32,8 @@ APP.Controller = (function() {
   };
 
   var deleteTag = function(e){
-    var uri = '/tags/' + e.target.getAttribute("data-id")
-    console.log(uri)
+    var uri = '/tags/' + e.target.getAttribute("data-id") +".json"
+
     $.ajax({
       url: uri,
       method: 'DELETE',
@@ -42,7 +42,17 @@ APP.Controller = (function() {
   }
 
   var successfulTagDelete = function(e){
-    console.log(e)
+    _findandDeleteTag(e.responseJSON.id);
+
+    _View.createTags(_tags);
+  }
+
+  var _findandDeleteTag = function(id) {
+    for( var i = 0; i < _tags.length; i++){
+      if (_tags[i].id === id) {
+        _tags.splice(i,1);
+      }
+    }
   }
 
   var resetDimensions = function(){
@@ -116,7 +126,9 @@ APP.Controller = (function() {
   }
 
   var _successfulTagCreate = function(r){
-    _tempTag.name = r.name
+    _tempTag.name = r.name;
+    _tempTag.id = r.tag.id;
+
     _tags.push(_tempTag);
     _tempTag = undefined;
     _View.createTags(_tags);
