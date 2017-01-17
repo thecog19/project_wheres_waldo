@@ -1,34 +1,53 @@
-APP = APP || { }
+var APP = APP || { }
 
-APP.controller = (function(view) {
-  
-  var _tagConstuctor = function(x,y,name){
+APP.Controller = (function() {
+  var _View;
+
+  var _TagConstuctor = function(x,y,name){
     this.x = x;
     this.y = y;
     this.name = name || null;
   };
 
-  var _tags = [];
+  var _tags = [ new _TagConstuctor(40,50),
+                new _TagConstuctor(0,0),
+                new _TagConstuctor(150, 100),
+                new _TagConstuctor(300, 400)];
+
   var _tempTag = undefined;
 
-  var init = function(){
-    APP.view.init({ 
+  var init = function(View){
+    _View = View;
+
+    _View.init({
       pictureEnter: pictureEnter,
-      pictureLeave: pictureLeave
+      pictureLeave: pictureLeave,
+      pictureClick: pictureClick
     })
   };
 
   var pictureEnter = function(){
-    View.createTags(_tags);
+    _View.createTags(_tags);
   }
 
   var pictureLeave = function(){
-    View.deleteTags(_tags);
+    _View.deleteTags(_tags);
+  }
+
+  var pictureClick = function(e) {
+    console.log(e);
+
+    var tempTag = new _TagConstuctor(e.pageX, e.pageY);
+    _View.addDropdown(tempTag);
   }
 
   return { init: init }
 
-})(APP.view)
+})();
+
+$(document).ready( function(){
+  APP.Controller.init(APP.View);
+});
 
 // Pseudocode. Like code, but better.
 
@@ -45,4 +64,4 @@ APP.controller = (function(view) {
 //submit listener
   //on dropdown submit saves temp tag
   //removes temp tag
-  //removes drop down 
+  //removes drop down

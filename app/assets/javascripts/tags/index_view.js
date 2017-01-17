@@ -1,43 +1,46 @@
-APP = APP || { }
+var APP = APP || { }
 
-APP.view = (function($){
+APP.View = (function($){
   var $pic;
 
+  var _addEventListeners = function _addEventListeners(cbs) {
+    $pic.on("mouseover", cbs.pictureEnter)
+    $pic.on("mouseout", cbs.pictureLeave)
+    $pic.on("click", cbs.pictureClick)
+  }
+
   var init = function(callbacks){
-    $pic = $("#waldo-pic")
-    $pic.on("mouseover", callbacks.pictureEnter)
-    $pic.on("mouseout", callbacks.pictureExit)
+    $pic = $("#waldo-pic");
+    _addEventListeners(callbacks);
   };
 
   var createTags = function(tags){
-    tags.forEach(function(tag){
-      $()
+    deleteTags();
 
+    tags.forEach(function(tag){
+      tagSquare = document.createElement('DIV');
+      tagSquare.classList.add('tag');
+
+      tagSquare.style.top = tag.y + "px";
+      tagSquare.style.left = tag.x+ "px";
+      tagSquare.style.zIndex = '0';
+
+      $pic[0].appendChild(tagSquare);
     })
   };
+
+  var deleteTags = function(){
+    $pic[0].innerHTML = "";
+  };
+
+  var addDropdown = function addDropdown(tag) {
+    createTags([tag]);
+  }
+
+  return {
+          init: init,
+          createTags: createTags,
+          deleteTags: deleteTags,
+          addDropdown: addDropdown,
+          }
 })($)
-
-var renderBoard = function renderBoard(board) {
-  var size = CELL_SIDE,
-  square;
-
-  gameWrapper.innerHTML = "";
-
-  for(coord in board) {
-  square = document.createElement('DIV');
-  square.classList.add('square');
-   square.id = coord;
-
-  if (board[coord].value) {
-  square.classList.add(board[coord].value)
-  }
-
-  square.style.height = size;
-  square.style.width = size;
-  square.style.top = board[coord].y*size + "px";
-  square.style.left = board[coord].x*size + "px";
-  square.style.zIndex = '0';
-
-  gameWrapper.appendChild(square);
-  }
-  }
