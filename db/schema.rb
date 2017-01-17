@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170117182120) do
+ActiveRecord::Schema.define(version: 20170117185600) do
 
   create_table "names", force: :cascade do |t|
     t.string   "name"
@@ -21,8 +21,8 @@ ActiveRecord::Schema.define(version: 20170117182120) do
   create_table "tags", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float    "xcoord"
-    t.float    "ycoord"
+    t.float    "x"
+    t.float    "y"
     t.integer  "name_id"
   end
 

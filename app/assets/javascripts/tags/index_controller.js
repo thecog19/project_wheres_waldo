@@ -48,18 +48,34 @@ APP.Controller = (function() {
   }
 
   var pictureClick = function(e) {
+    if (e.target.tagName === 'SELECT') return false;
+
     var coords = _View.computeCoords(e);
-    if(_tempTag){}else{
-        _tempTag = new _TagConstuctor(coords[0], coords[1]);
-        _View.addDropdown(_tempTag);
-      }}
+
+    if(_tempTag){
+      _tempTag = undefined;
+      _View.createTags(_tags);
+    } else {
+      _tempTag = new _TagConstuctor(coords[0], coords[1]);
+      _View.addDropdown(_tempTag);
+    }
+  }
 
   var tagNameSelect = function tagNameSelect(e) {
-    console.log("tagNameSelect", e.target.value)
-    _tempTag.name = e.target.value
-    _tags.push(_tempTag)
-    _tempTag = undefined
-    _View.createTags(_tags)
+    console.log("tagNameSelect", e.target.value);
+
+    _tempTag.name = e.target.value;
+    console.log(JSON.stringify({tag: _tempTag}));
+    _tags.push(_tempTag);
+    $.ajax({
+      url: '/tags.json',
+      method: 'POST',
+      data: JSON.stringify({tag: _tempTag}),
+      contentType: 'application/json',
+      complete: (function(r){ console.log("ajax complete", r) })
+    })
+    _tempTag = undefined;
+    _View.createTags(_tags);
   }
 
   return { init: init }
