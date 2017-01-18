@@ -92,6 +92,10 @@ APP.View = (function($){
     return { x: (e.offsetX - 33)/width, y: (e.offsetY - 33)/height}
   }
 
+  var scoreDisplay = function(score){
+    alert("Your score was: " + score)
+  }
+
   return {
           init: init,
           createTags: createTags,

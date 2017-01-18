@@ -42,8 +42,9 @@ APP.Controller = (function() {
   }
 
   var successfulTagDelete = function(e){
-    _findandDeleteTag(e.responseJSON.id);
-
+    _findandDeleteTag(e.responseJSON.tag.id);
+    _names.push(e.responseJSON.name)
+    _View.generateDropdown(_names)
     _View.createTags(_tags);
   }
 
@@ -80,6 +81,14 @@ APP.Controller = (function() {
     for( var i = 0; i < _names.length; i++){
       if (_names[i].id === id) {
         return _names[i].name;
+      }
+    }
+  }
+
+  var _findNameIndex = function(id){ 
+    for( var i = 0; i < _names.length; i++){
+      if (_names[i].id === id) {
+        return i
       }
     }
   }
@@ -125,7 +134,14 @@ APP.Controller = (function() {
     }
   }
 
+  var _removeName = function(id){
+    var index = _findNameIndex(id)
+    _names.splice(index, 1)
+    _View.generateDropdown(_names)
+  }
+
   var _successfulTagCreate = function(r){
+    _removeName(r.tag.name_id)
     _tempTag.name = r.name;
     _tempTag.id = r.tag.id;
 
@@ -141,6 +157,7 @@ APP.Controller = (function() {
 
   var tagNameSelect = function tagNameSelect(e) {
     _tempTag.name_id = e.target.value;
+
 
     $.ajax({
       url: '/tags.json',

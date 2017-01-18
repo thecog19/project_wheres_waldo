@@ -33,7 +33,7 @@ class TagsController < ApplicationController
 
       respond_to do |format|
         format.html { redirect_to tags_path }
-        format.json { render json: @tag }
+        format.json { render json: {tag: @tag, name: @tag.name }}
       end
 
     else
